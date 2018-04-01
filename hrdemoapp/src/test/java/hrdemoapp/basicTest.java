@@ -1,6 +1,6 @@
 package hrdemoapp;
 
-import java.io.File;
+import java.io.IOException;
 
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -13,17 +13,18 @@ public class basicTest extends BaseClass {
 	static HomePage homePage = null;
 	static Users usersPage = null;
 	static Boolean txtuserNameexists = false;
-	static File fileName;
+
+	// static File fileName;
 
 	public basicTest() {
 		super();
 	}
 
 	@BeforeClass
-	public static void openBrowser() {
+	public static void openBrowser() throws IOException {
 		// extentTest = extentReport.startTest("Create Users");
 
-		fileName = new File("C:\\Users\\Bhagyashree\\Desktop\\users.txt");
+		deleteOutput();
 
 		initApp();
 	}
@@ -51,7 +52,7 @@ public class basicTest extends BaseClass {
 	}
 
 	@Test(dependsOnMethods = "loginToApplication")
-	public static void openUsers() {
+	public static void openUsers() throws InterruptedException {
 
 		homePage.clickAdminLink();
 		homePage.clickUserManagementLink();
@@ -63,14 +64,21 @@ public class basicTest extends BaseClass {
 
 	@Test(dependsOnMethods = "openUsers", dataProvider = "Users", dataProviderClass = UserDataProvider.class)
 	public static void addUsers(String userType, String empName,
-			String userName, String password, String confPassword) {
+			String userName, String password, String confPassword)
+			throws InterruptedException {
 		usersPage.clickAdd();
 		usersPage.selectUserType(userType);
 		usersPage.enterEmpName(empName);
 		usersPage.enterUserName(userName + Utilities.getTimeStamp());
 		usersPage.enterPassword(password);
 		usersPage.enterConfPassword(confPassword);
+
 		usersPage.clickSave();
+		Thread.sleep(3000);
+		// wdWait.until(ExpectedConditions.visibilityOf((driver.findElement(By
+		// .xpath("//*[contains(text(),'Successfully')]")))));
+		// System.out.println("Hurrah");
+
 		usersPage.writeToFile(fileName);
 		txtuserNameexists = usersPage.userNameDisplayed();
 		Assert.assertTrue(txtuserNameexists);

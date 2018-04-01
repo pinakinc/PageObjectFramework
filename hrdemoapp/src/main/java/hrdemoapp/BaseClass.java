@@ -5,13 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeTest;
 
 import com.relevantcodes.extentreports.ExtentReports;
@@ -24,6 +25,8 @@ public class BaseClass {
 	// public ITestResult iTestResult;
 	static WebDriver driver = null;
 	public static Logger logger = null;
+	protected static WebDriverWait wdWait = null;
+	protected static File fileName = new File("src/main/resources/users.txt");
 
 	// {
 	// extentReport = new ExtentReports(
@@ -39,8 +42,17 @@ public class BaseClass {
 		// driver = SingletonDriver.getSigletonInstance();
 	}
 
+	public static void deleteOutput() throws IOException {
+		if (fileName.exists()) {
+			fileName.delete();
+		}
+		fileName.createNewFile();
+	}
+
 	public static void populateDriver() {
+
 		driver = SingletonDriver.getSigletonInstance();
+		wdWait = new WebDriverWait(driver, 60);
 	}
 
 	public static void initApp() {
@@ -50,7 +62,7 @@ public class BaseClass {
 	}
 
 	public static Login navigateToURL(String URL) {
-		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+		// driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 		driver.navigate().to(URL);
 
 		return new Login(driver);
@@ -78,18 +90,23 @@ public class BaseClass {
 	}
 
 	public static void enterText(WebElement elem, String text) {
+		wdWait.until(ExpectedConditions.visibilityOf(elem));
 		elem.sendKeys(text);
 	}
 
 	public static void clickButton(WebElement elem) {
+		wdWait.until(ExpectedConditions.elementToBeClickable(elem));
 		elem.click();
 	}
 
-	public static void clickLink(WebElement elem) {
+	public static void clickLink(WebElement elem) throws InterruptedException {
+		wdWait.until(ExpectedConditions.elementToBeClickable(elem));
 		elem.click();
+
 	}
 
 	public static void selectValue(WebElement elem, String selText) {
+		wdWait.until(ExpectedConditions.visibilityOf(elem));
 		new Select(elem).selectByVisibleText(selText);
 	}
 

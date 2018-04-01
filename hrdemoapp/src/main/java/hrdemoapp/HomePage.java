@@ -38,24 +38,24 @@ public class HomePage extends BaseClass {
 
 	}
 
-	public void clickAdminLink() {
+	public void clickAdminLink() throws InterruptedException {
 		// System.out.println("Clicking Admin link");
 		logger.info("Clicking Admin link");
 		clickLink(mnuAdmin);
 	}
 
-	public void clickUserManagementLink() {
+	public void clickUserManagementLink() throws InterruptedException {
 		logger.info("Clicking User Management link");
 		clickLink(mnuUserManagement);
 	}
 
-	public Users clickUsersLink() {
+	public Users clickUsersLink() throws InterruptedException {
 		logger.info("Clicking Users link");
 		clickLink(mnuUsers);
 		return new Users();
 	}
 
-	public static void clickLogout() {
+	public static void clickLogout() throws InterruptedException {
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e1) {
